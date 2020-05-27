@@ -1,0 +1,14 @@
+{
+  "private": true,
+  "scripts": {
+    "start": "electron --no-sandbox index.js"
+  },
+  "dependencies": {
+    "benja": "latest",
+    "compression": "latest",
+    "express": "latest"
+  },
+  "devDependencies": {
+    "electron": "latest"
+  }
+}

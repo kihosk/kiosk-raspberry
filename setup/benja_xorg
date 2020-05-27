@@ -1,0 +1,22 @@
+#!/usr/bin/env bash
+
+while ! sudo pacman -S --needed --noconfirm \
+  xorg-server xorg-xhost xorg-xinit xorg-xrandr xorg-xset xorg-server-xwayland \
+  xterm unclutter
+do
+  :
+done
+
+sudo pacman -Sc --noconfirm
+
+# dark theme
+echo '*background: black
+*foreground: lightgray
+xterm*faceName: DejaVu Sans Mono
+xterm*renderFont: true
+'>>~/.Xdefaults
+
+# Xorg / xinit conifg
+curl -LO https://archibold.io/benja/setup/benja_xinitrc
+mv benja_xinitrc .xinitrc
+chmod a+x .xinitrc

@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+
+while ! sudo pacman -Sy --needed --noconfirm \
+  python-pip python-numpy python-pillow \
+  inotify-tools
+do
+  :
+done
+
+sudo pip install inotify_simple

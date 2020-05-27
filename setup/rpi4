@@ -1,0 +1,3 @@
+#!/usr/bin/env bash
+
+bash <(curl -s https://archibold.io/benja/setup/rpi_common)

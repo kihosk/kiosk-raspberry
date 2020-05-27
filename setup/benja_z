@@ -1,0 +1,28 @@
+#!/usr/bin/env bash
+
+echo "enable common services"
+sudo systemctl enable sshd
+sudo systemctl enable dhcpcd
+
+rm -f ~/bootstrap
+
+if [ "${BENJA_PASSWORD}" != "" ]; then
+  echo "changing ${USER} password"
+  echo -e "${BENJA_PASSWORD}
+${BENJA_PASSWORD}" | sudo passwd ${USER}
+  echo "deleting root password"
+  sudo passwd -d root
+  sync
+fi
+
+# cleanup and optimize
+echo "clean up and optimize"
+sudo pacman -Sc --noconfirm
+sudo pacman-optimize
+
+rm -f ~/.bash_history
+touch ~/.bash_history
+
+echo "rebooting ..."
+sleep 5
+sudo reboot

@@ -1,0 +1,224 @@
+#!/usr/bin/env bash
+
+if [ "$(uname)" = "Darwin" ] && [ ! -f /opt/gnu/sbin/mkfs.ext4 ]; then
+  clear
+  echo ''
+  echo "  You need $(tput bold)fuse-ext2$(tput sgr0) to use this installer."
+  echo '  Please install it following these instrauctions:'
+  echo '  https://github.com/alperakcan/fuse-ext2#macos'
+  echo ''
+  exit 1
+elif [ "$(uname)" != "Darwin" ] && [ "$(which parted 2> /dev/null)" = "" ]; then
+  clear
+  echo ''
+  echo "  You need $(tput bold)dosfstools$(tput sgr0) and $(tput bold)parted$(tput sgr0) to use this installer."
+  echo ""
+  echo "  sudo pacman -S --needed parted dosfstools base-devel"
+  echo ''
+  exit 1
+fi
+
+source utils
+
+clear
+targetPlatform
+
+clear
+findTheDisk
+
+if [ ! -f "${BENJA_ARCHIVE}" ]; then
+  clear
+  echoWithLogo "# Downloading ${BENJA_SBC} Archive
+"
+
+  curl -LO "http://os.archlinuxarm.org/os/${BENJA_ARCHIVE}"
+fi
+
+BENJA_ARCHIVE_PATH="$(pwd)/${BENJA_ARCHIVE}"
+
+clear
+echoWithLogo "# Preparing ${BENJA_SBC} Card
+
+  * partitioning
+  * formatting
+  * copying files over
+"
+
+BENJA_SD_SIZE=$(diskSize $BENJA_DISK)
+BENJA_ROOT_SIZE="6800000"
+if [ "$BENJA_ROOT_SIZE" -gt "$BENJA_SD_SIZE" ]; then
+  BENJA_ROOT_SIZE="3700M"
+else
+  BENJA_ROOT_SIZE="6800M"
+fi
+
+echomd "*SD Card info*
+  * total space: $BENJA_SD_SIZE
+  * root partition of $BENJA_ROOT_SIZE
+
+# WARNING
+
+  disk *${BENJA_DISK}* will be completely *erased*
+  #red(all data) in it will be #red(lost)
+"
+read -n1 -r -p "$(echomd " erase *${BENJA_DISK}* ? [y/N]")" CHOICE
+
+if [[ $? -ne 0 ]] || [ "$CHOICE" != "y" ]; then
+  echo ""
+  echomd "*bye bye*"
+  echo ""
+  exit 1
+fi
+
+clear
+echoWithLogo "# Preparing ${BENJA_SBC} Card
+
+  * partitioning
+"
+
+unmount $BENJA_DISK
+createPartitions "${BENJA_DISK}" "$BENJA_ROOT_SIZE"
+
+clear
+echoWithLogo "# Preparing ${BENJA_SBC} Card
+
+  * partitioning ✔
+  * formatting
+"
+BENJA_SDCARD_PARTITIONS=($(getPartitions $BENJA_DISK))
+formatPartitions "$BENJA_DISK" ${BENJA_SDCARD_PARTITIONS[*]}
+
+TMP_DIR=~/tmp-benja-$RANDOM
+mkdir -p $TMP_DIR
+cd $TMP_DIR
+clear
+echoWithLogo "# Preparing ${BENJA_SBC} Card
+
+  * partitioning ✔
+  * formatting ✔
+  * copying files over
+
+  This operation might take a while, please wait
+"
+sleep 2
+installOS "$BENJA_ARCHIVE_PATH" "$BENJA_DISK" ${BENJA_SDCARD_PARTITIONS[*]}
+clear
+echoWithLogo "# Preparing ${BENJA_SBC} Card
+
+  * partitioning ✔
+  * formatting ✔
+  * copying files over ✔
+
+   .... synchronizing ....
+  (it might take long time)
+"
+# this one would be better inside the installOS function
+# but macOS might take forever to copy files over
+# so that it's easy to miss the need to put another time
+# the password for sudo privileges
+sync
+cd -
+
+cd $TMP_DIR/root/home/alarm
+clear
+echoWithLogo "# Preparing ${BENJA_SBC} Card
+
+  * partitioning ✔
+  * formatting ✔
+  * copying files over ✔
+
+  Downloading bootstrap, wifi-setup, and aur
+"
+
+echo '#!/usr/bin/env bash
+
+pickAPass() {
+  local pass=
+  echo -e "
+In order to make B.E.N.J.A. more secure
+Please chose a \x1B[1mhard to guess password\x1B[22m
+to locally or remotely login with \x1B[1malarm\x1B[22m user
+and eventually execute sudo too
+"
+  read pass
+
+  if [ "${pass}" = "" ]; then
+    echo -e "  \x1B[1mNope\x1B[22m, one more time ... "
+    sleep 2
+    clear
+    pickAPass
+    return
+  fi
+
+  export BENJA_PASSWORD="${pass}"
+  clear
+}
+
+echo ""
+echo -e "\x1B[1mBENJA setup\x1B[22m starting in 3 seconds"
+sleep 3
+
+if [ "$(curl -Ls http://archibold.io/OK)" != "OK" ]; then
+  ./wifi-setup
+  echo ""
+  echo "testing wifi ..."
+  sleep 3
+  if [ "$(curl -Ls http://archibold.io/OK)" != "OK" ]; then
+    echo "wifi not working: masking systemd-resolved"
+    yes root | su -c "systemctl stop systemd-resolved"
+    yes root | su -c "systemctl mask systemd-resolved"
+    echo "reboot in 3 seconds"
+    sleep 3
+    yes root | su -c "reboot"
+  fi
+fi
+
+pickAPass
+
+if [ "$(which ntpdate 2> /dev/null)" != "" ]; then
+  echo -e "Updating time, \x1B[1mno password needed\x1B[22m, please wait ..."
+  echo root | su -c "ntpdate pool.ntp.org
+timedatectl set-local-rtc 1"
+  export TMP_TIME_UPDATED=true
+fi
+' > bootstrap
+cat setup/${BENJA_SETUP} >> bootstrap
+chmod a+x bootstrap
+sync
+
+echo '
+if [ -f bootstrap ]; then
+  ./bootstrap
+fi
+'>>.bashrc
+
+cat setup/benja_wifi > wifi-setup
+chmod a+x wifi-setup
+sync
+
+curl -LOs https://archibold.io/utils/aur
+chmod a+x aur
+sudo mv aur $TMP_DIR/root/usr/bin/
+
+curl -LOs https://archibold.io/utils/so
+chmod a+x so
+sudo mv so $TMP_DIR/root/usr/bin/
+
+sync
+
+cd -
+clear
+echoWithLogo "# ${BENJA_SBC} Card Ready 🎉
+
+  * plugin the SD card into the ${BENJA_SBC}
+  * login via user *alarm* and password *alarm*
+  * wait until the system reboots
+
+  Thank you for using B.E.N.J.A.
+"
+
+unmount $BENJA_DISK
+sync
+
+sudo rm -rf $TMP_DIR
+sleep 2
