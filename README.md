@@ -1,5 +1,5 @@
-# B.E.N.J.A. Documentation
-This page contains most basic information about BENJA and its usage.
+# Kiosk raspberry image
+This page contains most basic information about Kiosk image and its usage.
 Please note that every supported board might have slightly different setup,
 hardware acceleration capabilities, or setup.
 
@@ -12,17 +12,21 @@ Please install the following before proceeding with the installation:
 sudo apt install curl libarchive-tools
 ```
 
+### MacOS usage
+
+For creating a bootable SD card in MacOS environment - [fuse-ext2](https://github.com/alperakcan/fuse-ext2#macos) is needed to install OS as bootable SD card.
+
 ### Other distro/OS dependencies
 
 This is the list of command line utilities used by the installer: `bsdtar`, `curl`, `fdisk`, `lsbklk`, `mkfs`, `parted`, and `sudo`.
 If your environment has these utilities and a `bash` terminal, you should be able to prepare an SD card.
 
 
-### How to create the B.E.N.J.A. environment
-All you need to do, is type the following in your ArchLinux terminal, and follow the instructions:
+### How to create the Kiosk B.E.N.J.A. environment
+All you need to do, is type the following in your terminal, and follow the instructions:
 
 ```sh
-bash <(curl -s https://archibold.io/benja/prepare)
+./prepare
 ```
 
 
@@ -136,3 +140,4 @@ You can use `npm update` too, if needed, in the `~/` or `~/app` folder.
 
   * **electron**: for some reason Electron starts leaving 1 pixel width and height off. If you have any idea how to fix that, please share, thanks.
   * **wifi**: in some case, Raspberry Pi Zero W might let you configure the WiFi properly, but then it'll ask again to configure it. If that's the case, unplug the Raspberry, wait a minute, then switch it on again, as I haven't found yet the culprit of this issue. However, once BENJA has been setup, the WiFi connection on boot seems to be stable.
+  * **launch**: Kiosk application is launched via javascript. For some reasons it couldn't be launched directly from `AppImage` as it appears only as a black screen, might be worth investigating the BENJA create app, maybe some modifications are needed to be done in Kiosk client

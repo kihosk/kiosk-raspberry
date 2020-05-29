@@ -88,6 +88,8 @@ echoWithLogo "# Preparing ${BENJA_SBC} Card
 BENJA_SDCARD_PARTITIONS=($(getPartitions $BENJA_DISK))
 formatPartitions "$BENJA_DISK" ${BENJA_SDCARD_PARTITIONS[*]}
 
+
+PROJECT_DIR=$(pwd)
 TMP_DIR=~/tmp-benja-$RANDOM
 mkdir -p $TMP_DIR
 cd $TMP_DIR
@@ -175,6 +177,11 @@ fi
 
 pickAPass
 
+yes root | su -c "chown -R alarm:alarm /home/alarm/app"
+yes root | su -c "chown -R alarm:alarm /home/alarm/setup"
+yes root | su -c "chown -R alarm:alarm /home/alarm/kiosk"
+yes root | su -c "chmod -R +x /home/alarm/setup/"
+
 if [ "$(which ntpdate 2> /dev/null)" != "" ]; then
   echo -e "Updating time, \x1B[1mno password needed\x1B[22m, please wait ..."
   echo root | su -c "ntpdate pool.ntp.org
@@ -182,8 +189,15 @@ timedatectl set-local-rtc 1"
   export TMP_TIME_UPDATED=true
 fi
 ' > bootstrap
-cat setup/${BENJA_SETUP} >> bootstrap
+# TODO Think about deleting setup dir from sd card as well
+cat $PROJECT_DIR/setup/${BENJA_SETUP} >> bootstrap
+mkdir setup
+cp -a $PROJECT_DIR/setup/* setup/
 chmod a+x bootstrap
+sync
+
+mkdir kiosk
+cp -a $PROJECT_DIR/app/* kiosk/
 sync
 
 echo '
@@ -192,7 +206,7 @@ if [ -f bootstrap ]; then
 fi
 '>>.bashrc
 
-cat setup/benja_wifi > wifi-setup
+curl -s "https://archibold.io/benja/setup/benja_wifi" > wifi-setup
 chmod a+x wifi-setup
 sync
 

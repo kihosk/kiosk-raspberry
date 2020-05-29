@@ -4,7 +4,7 @@ bash <(curl -s https://archibold.io/benja/setup/benja_common)
 
 # install specific GPU / Xorg driver
 while ! sudo pacman -S --needed --noconfirm \
-  mesa libva-vdpau-driver libva-mesa-driver xf86-video-fbdev mesa-vdpau
+  mesa libva-vdpau-driver libva-mesa-driver xf86-video-fbdev mesa-vdpau fuse
 do
   :
 done
@@ -28,5 +28,6 @@ fi
 
 bash <(curl -s https://archibold.io/benja/setup/rpi_config)
 bash <(curl -s https://archibold.io/benja/setup/rpi_raspi-io)
-bash <(curl -s https://archibold.io/benja/setup/benja_app)
+bash <(cat /home/alarm/setup/benja_app)
+#bash <(curl -s https://archibold.io/benja/setup/benja_app)
 bash <(curl -s https://archibold.io/benja/setup/benja_z)

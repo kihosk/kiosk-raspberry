@@ -3,12 +3,14 @@
 if [ ! -f ~/app/package.json ]; then
   echo ' installing app'
   cd ~/app
-  curl -LOs "https://archibold.io/benja/app/index.js"
-  curl -LOs "https://archibold.io/benja/app/index.html"
-  curl -LOs "https://archibold.io/benja/app/package.json"
-  curl -LOs "https://archibold.io/benja/app/logo-dark.svg"
-  curl -LOs "https://archibold.io/benja/app/logo-light.svg"
+  cp -a /home/alarm/kiosk/* .
   touch reload
+  latestAlphaPath=$(curl -s https://kiosk-app-files.s3.eu-central-1.amazonaws.com/alpha-linux-arm.yml | sed -e 's/:[^:\/\/]/="/g;s/$/"/g;s/ *=/=/g' | grep path | sed 's/[^"]*"\([^"]*\)".*/\1/')
+  wget "https://kiosk-app-files.s3.eu-central-1.amazonaws.com/$latestAlphaPath"
+  mv $latestAlphaPath kiosk-app.AppImage
+
+  chmod a+x kiosk-app.AppImage
+
   mkdir -p node_modules
   npm install --production --no-bin-links
   cd -

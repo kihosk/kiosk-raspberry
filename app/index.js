@@ -17,28 +17,30 @@ const {BrowserWindow, app} = electron;
 app.commandLine.appendSwitch('--ignore-gpu-blacklist');
 
 app.once('ready', () => {
+  const execSync = require('child_process').execSync;
+  const output = execSync('./kiosk-app.AppImage --no-sandbox', { encoding: 'utf-8' });
+  // TODO This is the original code for testing the web app itself. Might be worth investigating on our app
+  // const {width, height} = electron.screen.getPrimaryDisplay().workAreaSize;
+  // let window = new BrowserWindow({
+  //   webPreferences: {
+  //     nodeIntegration: true,
+  //     nodeIntegrationInWorker: true,
+  //     webgl: true
+  //   },
+  //   backgroundColor: '#000000',
+  //   frame: false,
+  //   // in some case kiosk: true is not working
+  //   // same goes for fullscreen but this is working
+  //   fullscreen: true,
+  //   x: 0,
+  //   y: 0,
+  //   width,
+  //   height
+  // });
 
-  const {width, height} = electron.screen.getPrimaryDisplay().workAreaSize;
-  let window = new BrowserWindow({
-    webPreferences: {
-      nodeIntegration: true,
-      nodeIntegrationInWorker: true,
-      webgl: true
-    },
-    backgroundColor: '#000000',
-    frame: false,
-    // in some case kiosk: true is not working
-    // same goes for fullscreen but this is working
-    fullscreen: true,
-    x: 0,
-    y: 0,
-    width,
-    height
-  });
-
-  window
-    .once('closed', () => { window = null; })
-    .loadURL('http://localhost:8080/');
+  // window
+  //   .once('closed', () => { window = null; })
+  //   .loadURL('http://localhost:8080/');
     // test CSS
  // .loadURL('https://bennettfeely.com/csscreatures/');
     // test WebGL
