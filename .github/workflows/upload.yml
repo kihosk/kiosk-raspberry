@@ -15,9 +15,18 @@ jobs:
         # https://github.com/shallwefootball/upload-s3-action/issues/6
         run: mkdir release && cp prepare-kiosk.sh release/
 
-      - uses: shallwefootball/s3-upload-action@master
+      # - uses: shallwefootball/s3-upload-action@master
+      #   with:
+      #     aws_key_id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+      #     aws_secret_access_key: ${{ secrets.AWS_SECRET_ACCESS_KEY}}
+      #     aws_bucket: kiosk-rpi-files
+      #     source_dir: release
+      - uses: jakejarvis/s3-sync-action@master
         with:
-          aws_key_id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws_secret_access_key: ${{ secrets.AWS_SECRET_ACCESS_KEY}}
-          aws_bucket: kiosk-rpi-files
-          source_dir: release
+          args: --acl public-read --follow-symlinks --delete
+        env:
+          AWS_S3_BUCKET: kiosk-rpi-files
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_REGION: 'eu-central-1'
+          SOURCE_DIR: 'prepare-kiosk.sh'
