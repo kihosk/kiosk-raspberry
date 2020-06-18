@@ -3,12 +3,17 @@ name: Upload to S3
 on:
   push:
     branches: [ master ]
+  pull_request:
+    branches: [ master ]
 
 jobs:
   upload:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@master
+      - name: Configure git email
+        run: echo ${{ secrets.AWS_KEY_ID }}
+
       - uses: shallwefootball/s3-upload-action@master
         with:
           aws_key_id: ${{ secrets.AWS_KEY_ID }}
