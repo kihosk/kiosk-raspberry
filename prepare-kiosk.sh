@@ -34,4 +34,5 @@ ExecStart=
 ExecStart=-/sbin/agetty --autologin ${USER} --noclear %I 38400 linux
 '>/etc/systemd/system/getty@tty1.service.d/autorun.conf"
 
+echo "changed"
 sudo reboot
