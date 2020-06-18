@@ -12,6 +12,7 @@ jobs:
     steps:
       - uses: actions/checkout@master
       - name: Workaround on S3 action bug
+        # https://github.com/shallwefootball/upload-s3-action/issues/6
         run: mkdir release && cp prepare-kiosk.sh release/
 
       - uses: shallwefootball/s3-upload-action@master
@@ -19,4 +20,4 @@ jobs:
           aws_key_id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws_secret_access_key: ${{ secrets.AWS_SECRET_ACCESS_KEY}}
           aws_bucket: kiosk-rpi-files
-          source_dir: 'release'
+          source_dir: release
