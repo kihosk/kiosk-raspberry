@@ -4,7 +4,7 @@
 sudo apt-get install -y ntp
 
 sudo apt-get update
-sudo apt-get install -y --no-install-recommends xserver-xorg x11-xserver-utils xinit openbox vim chromium fbi
+sudo apt-get install -y --no-install-recommends xserver-xorg x11-xserver-utils xinit openbox chromium fbi ufw unattended-upgrades fail2ban
 
 # openbox configuration
 sudo sh -c "echo '
@@ -54,9 +54,37 @@ sudo sh -c "echo '
 disable_splash=1
 '>> /boot/config.txt"
 
+sudo sh -c " echo '
+Unattended-Upgrade::Origins-Pattern {
+        "origin=Debian,codename=${distro_codename},label=Debian-Security";
+};
+Unattended-Upgrade::Package-Blacklist {
+};
+'> /etc/apt/apt.conf.d/50unattended-upgrades"
+
 # Appending to the last line without new line using `sed`
 sudo sed -i -e '${s/$/ logo.nologo consoleblank=0 loglevel=1 quiet/}' /boot/cmdline.txt
 wget https://kiosk-rpi-files.s3.eu-central-1.amazonaws.com/splashscreen.jpg
 sudo systemctl enable splashscreen
+
+#enabling firewall
+sudo ufw enable
+
+# fail2ban config
+sudo sh -c "echo '
+[ssh]
+ 
+enabled = true
+port = ssh
+filter = sshd
+logpath = /var/log/auth.log
+bantime = 900
+banaction = iptables-allports
+findtime = 900
+maxretry = 3
+'> /etc/fail2ban/jail.local"
+
+# Removing bash history
+rm .bash_history
 
 sudo reboot
