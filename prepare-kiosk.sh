@@ -4,7 +4,7 @@
 sudo apt-get install -y ntp
 
 sudo apt-get update
-sudo apt-get install -y --no-install-recommends xserver-xorg x11-xserver-utils xinit openbox chromium fbi ufw unattended-upgrades fail2ban
+sudo apt-get install -y --no-install-recommends xserver-xorg x11-xserver-utils xinit openbox chromium fbi ufw unattended-upgrades fail2ban hostapd dnsmasq
 
 # openbox configuration
 sudo sh -c "echo '
