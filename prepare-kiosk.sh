@@ -52,6 +52,7 @@ WantedBy=sysinit.target
 
 sudo sh -c "echo '
 disable_splash=1
+disable_overscan=1
 '>> /boot/config.txt"
 
 sudo sh -c " echo '
