@@ -52,6 +52,7 @@ WantedBy=sysinit.target
 
 sudo sh -c "echo '
 disable_splash=1
+disable_overscan=1
 '>> /boot/config.txt"
 
 sudo sh -c " echo '
@@ -89,6 +90,9 @@ sudo sh -c "echo '
 ctrl_interface=DIR=/var/run/wpa_supplicant GROUP=netdev
 update_config=1
 ' > /etc/wpa_supplicant/wpa_supplicant.conf"
+
+# ensure WiFi radio is not blocked
+sudo rfkill unblock wlan
 
 # Removing bash history and unsetting current session
 rm .bash_history
