@@ -90,6 +90,9 @@ ctrl_interface=DIR=/var/run/wpa_supplicant GROUP=netdev
 update_config=1
 ' > /etc/wpa_supplicant/wpa_supplicant.conf"
 
+# ensure WiFi radio is not blocked
+sudo rfkill unblock wlan
+
 # Removing bash history and unsetting current session
 rm .bash_history
 history -c
