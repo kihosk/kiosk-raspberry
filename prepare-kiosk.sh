@@ -65,7 +65,7 @@ Unattended-Upgrade::Package-Blacklist {
 # Appending to the last line without new line using `sed`
 sudo sed -i -e '${s/$/ logo.nologo consoleblank=0 loglevel=1 quiet/}' /boot/cmdline.txt
 wget https://kiosk-rpi-files.s3.eu-central-1.amazonaws.com/splashscreen.jpg
-sudo systemctl enable splashscreen
+sudo systemctl enable splashscreen  # TODO requires user input (for 'y' char)
 
 #enabling firewall
 sudo ufw enable
@@ -83,6 +83,12 @@ banaction = iptables-allports
 findtime = 900
 maxretry = 3
 '> /etc/fail2ban/jail.local"
+
+# unsetting all wifi creds
+sudo sh -c "echo '
+ctrl_interface=DIR=/var/run/wpa_supplicant GROUP=netdev
+update_config=1
+' > /etc/wpa_supplicant/wpa_supplicant.conf"
 
 # Removing bash history
 rm .bash_history
