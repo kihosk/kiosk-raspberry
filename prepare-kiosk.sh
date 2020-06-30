@@ -1,5 +1,25 @@
 #!/usr/bin/env bash
 
+read -r -p "Are you deploying development environment? [y/N] " choice
+choice=${choice,,}    # tolower
+
+PROD_BUILD=1
+PURGE_WIFI_CREDS=0
+if [[ "$choice" =~ ^(y)$ ]]
+then
+    PROD_BUILD=0
+    read -r -p "Leave existing wifi credentials? [y/N] " wifi_choice
+    wifi_choice=${wifi_choice,,}    # tolower
+    if [[ "$wifi_choice" =~ ^(yes|y)$ ]]
+    then
+        PURGE_WIFI_CREDS=1
+    fi
+else
+    PROD_BUILD=1
+fi
+
+echo "Build configuration: prod build - ${PROD_BUILD}"
+
 # NTP is needed because sometimes after installing new OS RPi - device time is not correct 
 sudo apt-get install -y ntp
 
@@ -68,9 +88,6 @@ sudo sed -i -e '${s/$/ logo.nologo consoleblank=0 loglevel=1 quiet/}' /boot/cmdl
 wget https://kiosk-rpi-files.s3.eu-central-1.amazonaws.com/splashscreen.jpg
 sudo systemctl enable splashscreen
 
-#enabling firewall
-yes | sudo ufw enable
-
 # fail2ban config
 sudo sh -c "echo '
 [ssh]
@@ -85,11 +102,19 @@ findtime = 900
 maxretry = 3
 '> /etc/fail2ban/jail.local"
 
-# unsetting all wifi creds
-sudo sh -c "echo '
-ctrl_interface=DIR=/var/run/wpa_supplicant GROUP=netdev
-update_config=1
-' > /etc/wpa_supplicant/wpa_supplicant.conf"
+if [ $PROD_BUILD = 1 ]; then
+    #enabling firewall
+    yes | sudo ufw enable
+    # TODO change pi user password, assure that ssh is disabled, etc
+fi
+
+if [ $PURGE_WIFI_CREDS = 0 ]; then
+    # unsetting all wifi creds
+    sudo sh -c "echo '
+    ctrl_interface=DIR=/var/run/wpa_supplicant GROUP=netdev
+    update_config=1
+    ' > /etc/wpa_supplicant/wpa_supplicant.conf"
+fi
 
 # ensure WiFi radio is not blocked
 sudo rfkill unblock wlan
