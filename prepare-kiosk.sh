@@ -116,8 +116,8 @@ if [ $PURGE_WIFI_CREDS = 0 ]; then
     ' > /etc/wpa_supplicant/wpa_supplicant.conf"
 fi
 
-# ensure WiFi radio is not blocked
-sudo rfkill unblock wlan
+# ensure WiFi radio is not blocked (stackoverflow suggests unblocking all RFs)
+sudo rfkill unblock all
 
 # Removing bash history and unsetting current session
 rm .bash_history
