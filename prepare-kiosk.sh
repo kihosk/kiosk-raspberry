@@ -73,6 +73,7 @@ WantedBy=sysinit.target
 sudo sh -c "echo '
 disable_splash=1
 disable_overscan=1
+hdmi_enable_4kp60=1
 '>> /boot/config.txt"
 
 sudo sh -c " echo '
