@@ -120,6 +120,10 @@ fi
 # ensure WiFi radio is not blocked (stackoverflow suggests unblocking all RFs)
 sudo rfkill unblock all
 
+# deleting machine-id so that it would be re-generated during next boot (so taht all new RPis would have different machine-ids)
+sudo rm /etc/machine-id
+sudo touch /etc/machine-id
+
 # Removing bash history and unsetting current session
 rm .bash_history
 history -c
