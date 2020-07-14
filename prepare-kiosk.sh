@@ -128,4 +128,5 @@ sudo touch /etc/machine-id
 rm .bash_history
 history -c
 
-sudo reboot
+# Gracefully shutting down the RPi
+sudo shutdown -h now
