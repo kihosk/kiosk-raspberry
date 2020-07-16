@@ -73,13 +73,20 @@ WantedBy=sysinit.target
 sudo sh -c "echo '
 disable_splash=1
 disable_overscan=1
+
+#Enabling 4k60Hz for TVs
 hdmi_enable_4kp60=1
 gpu_mem=128
 gpu_mem_256=128
 gpu_mem_512=196
 gpu_mem_1024=384
+
 hdmi_group=1
+#Enabling 1080p mode
 hdmi_mode=16
+
+# Increasing signal to HDMI
+config_hdmi_boost=4
 '>> /boot/config.txt"
 
 sudo sh -c " echo '
