@@ -74,6 +74,12 @@ sudo sh -c "echo '
 disable_splash=1
 disable_overscan=1
 hdmi_enable_4kp60=1
+gpu_mem=128
+gpu_mem_256=128
+gpu_mem_512=196
+gpu_mem_1024=384
+hdmi_group=1
+hdmi_mode=16
 '>> /boot/config.txt"
 
 sudo sh -c " echo '
