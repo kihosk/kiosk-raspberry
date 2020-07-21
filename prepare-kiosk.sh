@@ -118,8 +118,35 @@ maxretry = 3
 
 if [ $PROD_BUILD = 1 ]; then
     #enabling firewall
-    yes | sudo ufw enable
-    # TODO change pi user password, assure that ssh is disabled, etc
+    #yes | sudo ufw enable
+    # TODO assure that ssh is disabled, etc
+    
+    # preparing first-launch script for generating random password
+    echo -e '#!/bin/bash
+NEWPW="$(openssl rand -base64 32 | tr -d '\''EOF'\'')"
+passwd pi <<EOF
+raspberry
+$NEWPW
+$NEWPW
+
+# Removing script itself after run
+sudo rm $0
+'> first-launch
+    sudo mv first-launch /usr/local/bin/
+    sudo chmod +x /usr/local/bin/first-launch
+
+    # Configuring to launch this during the boot
+    echo -e '#!/bin/bash
+#
+# rc.local
+#
+# This script is executed at the end of each multiuser runlevel.
+# Make sure that the script will exit 0 on success or any other
+# value on error
+first-launch
+exit 0
+'> rc.local
+    sudo mv rc.local /etc/
 fi
 
 if [ $PURGE_WIFI_CREDS = 0 ]; then
@@ -133,7 +160,7 @@ fi
 # ensure WiFi radio is not blocked (stackoverflow suggests unblocking all RFs)
 sudo rfkill unblock all
 
-# deleting machine-id so that it would be re-generated during next boot (so taht all new RPis would have different machine-ids)
+# deleting machine-id so that it would be re-generated during next boot (so that all new RPis would have different machine-ids)
 sudo rm /etc/machine-id
 sudo touch /etc/machine-id
 
