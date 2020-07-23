@@ -117,8 +117,8 @@ maxretry = 3
 '> /etc/fail2ban/jail.local"
 
 if [ $PROD_BUILD = 1 ]; then
-    #enabling firewall
-    #yes | sudo ufw enable
+    # enabling firewall
+    yes | sudo ufw enable
     # TODO assure that ssh is disabled, etc
     
     # preparing first-launch script for generating random password
