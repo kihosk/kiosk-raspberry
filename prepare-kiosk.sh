@@ -71,6 +71,8 @@ WantedBy=sysinit.target
 '> /etc/systemd/system/splashscreen.service"
 
 sudo sh -c "echo '
+dtparam=audio=on
+display_hdmi_rotate=0
 disable_splash=1
 disable_overscan=1
 
@@ -89,7 +91,7 @@ hdmi_mode=16
 
 # Increasing signal to HDMI
 config_hdmi_boost=4
-'>> /boot/config.txt"
+'> /boot/config.txt"
 
 sudo sh -c " echo '
 Unattended-Upgrade::Origins-Pattern {
