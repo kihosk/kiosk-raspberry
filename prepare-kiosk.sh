@@ -72,6 +72,7 @@ WantedBy=sysinit.target
 
 sudo sh -c "echo '
 dtparam=audio=on
+display_hdmi_rotate=0
 disable_splash=1
 disable_overscan=1
 
