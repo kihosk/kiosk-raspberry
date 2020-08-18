@@ -23,7 +23,10 @@ In order to reproduce multiple identical Kiosk devices you can create an `.img` 
     ```
 3. Create the gzipped `img` file:
     ```bash
-    sudo dd if=/dev/disk5 bs=1m | gzip > ~/workspace/kiosk-v0.0.5.gz
+    sudo dd if=/dev/disk5 bs=1m | gzip > kiosk-v0.0.5.img.gz
+    
+    # or with xz
+    sudo dd if=/dev/disk5 bs=1m | xz > kiosk-v0.0.5.img.xz
     ```
 
 
