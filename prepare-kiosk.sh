@@ -4,7 +4,7 @@
 sudo apt-get install -y git ansible
 
 # Run preparation playbook
-sudo ansible-pull --url https://github.com/kihosk/test-ansible prepare.yml
+sudo ansible-pull --url https://github.com/kihosk/kiosk-os prepare.yml
 
 # Shutdown
 sudo shutdown -h now
