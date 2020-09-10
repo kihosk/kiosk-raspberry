@@ -25,12 +25,6 @@ else
 
     sudo dd if=/dev/rdisk$disk of=kiosk-$version.img bs=4m
     docker run --rm --privileged=true -v `pwd`:/workdir turee/pishrink-docker pishrink kiosk-$version.img kiosk-$version-shrinked.img
-    sudo diskutil eject /dev/rdisk${disk}
+    sudo diskutil eject /dev/rdisk$disk
 
 fi
-
-
-
-# sudo dd if=/dev/rdisk5 of=kiosk-v0.0.7.img bs=4m
-# docker run --rm --privileged=true -v `pwd`:/workdir turee/pishrink-docker pishrink kiosk-v0.0.7.img kiosk-v0.0.7-shrinked.img
-# sudo diskutil eject /dev/rdisk2
