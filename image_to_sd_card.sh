@@ -12,7 +12,7 @@ do
 
 done
 
-if [ -z "$disk" ] || [ -z "$version" ] || [ "$version" -lt "2" ]
+if [ -z "$disk" ] || [ -z "$version" ] || [ "$disk" -lt "2" ];
 then
     echo "You must specify disk and version variables"
     echo "Example: ./image_to_sd_card.sh disk=2 version=0.0.9"
@@ -25,6 +25,7 @@ else
 
     diskutil unmountDisk /dev/disk$disk
     sudo dd bs=1m if=kiosk-$version-shrinked.img of=/dev/rdisk$disk; sync
+    sleep 5
     sudo diskutil eject /dev/rdisk$disk
 
 fi

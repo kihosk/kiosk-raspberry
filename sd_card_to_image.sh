@@ -12,7 +12,7 @@ do
 
 done
 
-if [ -z "$disk" ] || [ -z "$version" ] || [ "$version" -lt "2" ]
+if [ -z "$disk" ] || [ -z "$version" ] || [ "$disk" -lt "2" ];
 then
     echo "You must specify disk and version variables"
     echo "Example: ./sd_card_to_image.sh disk=2 version=0.0.9"
