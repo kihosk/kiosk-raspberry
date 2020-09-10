@@ -12,10 +12,11 @@ do
 
 done
 
-if [ -z "$disk" ] || [ -z "$version" ] 
+if [ -z "$disk" ] || [ -z "$version" ] || [ "$version" -lt "2" ]
 then
     echo "You must specify disk and version variables"
     echo "Example: ./image_to_sd_card.sh disk=2 version=0.0.9"
+    echo "Also, disk number cannot be lower than 2"
 else
     echo "version = $version"
     echo "disk = $disk"
