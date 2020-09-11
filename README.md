@@ -1,6 +1,6 @@
 # Kiosk-raspberry documentation
-This page contains most basic information about Kiosk-raspberry setup
 
+This page contains most basic information about Kiosk-raspberry setup
 
 ### Prerequisites
 
@@ -14,51 +14,38 @@ Before executing this script following steps must be executed:
 
 ### Generate .img from SD card (macOS)
 
-In order to reproduce multiple identical Kiosk devices you can create an `.img` backup file, and use it to flash the device.  
+Prerequisite:
+
+- docker
+- macos
+
+In order to reproduce multiple identical Kiosk devices you can create an `.img` backup file, and use it to flash the device.
 
 1. Attach the source SD card that you want to clone
 2. List the local drives mounted on your computer:
-    ```bash
-    diskutil list
-    ```
 
-3. Create the zipped `img` file:
-    ```bash
-    # full size
-    sudo dd if=/dev/rdisk5 of=kiosk-v0.0.7.img bs=4m
+   ```bash
+   diskutil list
+   ```
 
-    # gzip
-    sudo dd if=/dev/rdisk5 bs=1m | gzip > kiosk-v0.0.7.img.gz
-    
-    # xz
-    sudo dd if=/dev/rdisk5 bs=1m | xz > kiosk-v0.0.7.img.xz
-    ```
+3. Create the `img` file:
 
-### Shrink image 
-You can use the script below to take your regular `.img` file and shrink it. 
+   ```bash
+   ./sd_card_to_image.sh version=0.0.15 disk=2
+   ```
 
-```bash
-docker run --rm --privileged=true -v `pwd`:/workdir turee/pishrink-docker pishrink kiosk-v0.0.7.img kiosk-v0.0.7-shrinked.img
-```
-
-This technique also has the advantage that you may write the output image to sd cards which don't match in size with the original. 
-
+   This will create a file named `kiosk-0.0.15-shrinked.img` in a directory named `out`
 
 ### Write img to SD card (macOS)
 
-The script below shows you how to write an img file to an sd card using the command line tools
+Ensure you have the image file in the location: `/kiosk-raspberry/out/kiosk-0.0.15-shrinked.img`. Not the .xz file, but the decompressed .img file.
+
+Run the following:
 
 ```bash
-# First unmount the target disk
-diskutil unmountDisk /dev/disk5
-
-# Secondly, flash the disk
-sudo dd bs=1m if=kiosk-v0.0.7-shrinked.img of=/dev/rdisk5; sync
-
-# Eject the disk for safety
-sudo diskutil eject /dev/rdisk2
+./image_to_sd_card.sh version=0.0.15 disk=2
 ```
 
 ### Known Issues
 
-  * **none**
+- **none**
