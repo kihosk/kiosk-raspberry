@@ -27,5 +27,5 @@ else
     sudo dd bs=1m if=kiosk-$version-shrinked.img of=/dev/rdisk$disk; sync
     sleep 5
     sudo diskutil eject /dev/rdisk$disk
-
+    osascript -e 'display notification "Succesfully wrote Kiosk to SD Card"'
 fi

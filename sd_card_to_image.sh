@@ -26,5 +26,6 @@ else
     sudo dd if=/dev/rdisk$disk of=kiosk-$version.img bs=4m
     docker run --rm --privileged=true -v `pwd`:/workdir turee/pishrink-docker pishrink kiosk-$version.img kiosk-$version-shrinked.img
     sudo diskutil eject /dev/rdisk$disk
+    osascript -e 'display notification "Succesfully cloned Kiosk to img file"'
 
 fi
