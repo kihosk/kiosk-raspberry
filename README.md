@@ -12,7 +12,36 @@ Before executing this script following steps must be executed:
 4. Execute this script `bash <(curl -sL https://kiosk-rpi-files.s3.eu-central-1.amazonaws.com/prepare-kiosk.sh)`. After script is completed the RPi will reboot and start with kiosk client
 5. In case you want to exit kiosk mode: either connect keyboard and enter `ctrl`, `alt` and `backspace` keys combination or connect via SSH
 
-### Generate .img from SD card (macOS)
+```bash
+brew install ansible
+```
+
+2. Install sshpass
+
+```bash
+brew install hudochenkov/sshpass/sshpass
+```
+
+2. Install Raspberry Pi Imager
+3. Clone the `kiosk-electron` repository
+
+### Create golden SD card (macOS)
+
+1. Use [Raspberry Pi Imager](https://www.raspberrypi.org/downloads/) to flash an SD card with `Raspbian OS Lite`
+2. Bootup the raspberry pi and login with default credentials (pi/raspberry).
+3. Connect the raspberry to wifi (`sudo raspi-config`)
+4. Enable ssh for the raspberry (`sudo raspi-config`)
+5. Find the raspberry's local ip address with `ifconfig`
+   _We'll assume it's `192.168.0.50` for this example_
+6. On your local machine, from the `kiosk-electron/ansible` directory run the command:
+   ```
+   ansible-playbook prepare.yml -i 192.168.0.50, -e "{target: 192.168.0.50}" -u pi --ask-pass
+   ```
+   _Note the ip address of the target raspberry_
+
+*Note: While the kiosk is running, in case you want to exit kiosk mode: either connect keyboard and enter `ctrl`, `alt` and `backspace` keys combination or connect via SSH*
+
+### Generate .img from golden SD card (macOS)
 
 Prerequisite:
 
