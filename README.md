@@ -20,6 +20,7 @@ brew install hudochenkov/sshpass/sshpass
 
 2. Install Raspberry Pi Imager
 3. Clone the `kiosk-electron` repository
+4. Newer versions of Docker desktop come with an incompatible [file sharing protocol](https://docs.docker.com/docker-for-mac/release-notes/#docker-desktop-community-2400). To switch back, go to Docker > Preferences > General and disable gRPC-FUSE. 
 
 ### Create golden SD card (macOS)
 
