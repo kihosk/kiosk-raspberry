@@ -72,6 +72,10 @@ Run the following:
 ./image_to_sd_card.sh version=0.0.15 disk=2
 ```
 
-### Known Issues
+### Compress image
 
-- **none**
+You can use xz for compressing the shrinked image, reducing the size from ~3.5GB down to ~990MB
+
+```bash
+xz -k out/kiosk-0.0.13-shrinked.img
+```
