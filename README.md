@@ -1,10 +1,11 @@
 # Kiosk OS on Raspberry Pi 
 
-This document contains the instructions that you need to follow in order to get Kiosk up and running on a Raspberry PI 4 device.
+This document contains the instructions that you need to follow in order to get Kiosk up and running on a Raspberry PI device.
 
 ## Prerequisites 
-- Raspberry Pi Imager ([download](https://www.raspberrypi.org/software/)) 
+- A Raspberry Pi 4
 - A microSD card (minimum 8GB)
+- Raspberry Pi Imager ([download](https://www.raspberrypi.org/software/)) 
 
 ## Download Kiosk OS
 
